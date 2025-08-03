@@ -1,6 +1,7 @@
 let foods = [];
 let records = JSON.parse(localStorage.getItem('records')) || {};
-let chart;
+let kcalChart;
+let pfcChart;
 
 // 食材データを読み込む
 fetch('food_data.json')
@@ -15,7 +16,6 @@ fetch('food_data.json')
       select.appendChild(option);
     });
 
-    // ✅ 初期選択時に単位を表示する
     if (foods.length > 0) {
       select.value = foods[0].name;
       document.getElementById('unit').textContent = foods[0].unit;
@@ -23,7 +23,7 @@ fetch('food_data.json')
 
     updateTotal();
     updateHistory();
-    updateChart();
+    updateCharts();
   });
 
 // 食材選択時に単位をセット
@@ -50,8 +50,7 @@ function addFood() {
   const food = foods.find(f => f.name === foodName);
   if (!food) return alert("食材が見つかりません");
 
-  // ⚡ 登録単位を基準に比率計算
-  const factor = quantity; // 登録単位が1単位なので、そのまま掛け算
+  const factor = quantity;
 
   const today = getToday();
   if (!records[today]) records[today] = [];
@@ -71,28 +70,35 @@ function addFood() {
 
   updateTotal();
   updateHistory();
-  updateChart();
+  updateCharts();
 
   document.getElementById('quantity').value = '';
 }
 
-// 全体合計を更新
+// 今日の合計を更新
 function updateTotal() {
   let total = { protein: 0, fat: 0, carbs: 0, calories: 0 };
-  Object.values(records).forEach(dayList => {
-    dayList.forEach(item => {
+  const today = getToday();
+
+  if (records[today]) {
+    records[today].forEach(item => {
       total.protein += item.protein;
       total.fat += item.fat;
       total.carbs += item.carbs;
       total.calories += item.calories;
     });
-  });
+  }
+
   document.getElementById('total').innerHTML = `
+    【今日の合計】<br>
     P: ${total.protein.toFixed(1)}g<br>
     F: ${total.fat.toFixed(1)}g<br>
     C: ${total.carbs.toFixed(1)}g<br>
     Kcal: ${total.calories.toFixed(1)} kcal
   `;
+
+  // PFC円グラフ更新
+  updatePFCChart(total);
 }
 
 // 履歴を更新
@@ -136,7 +142,7 @@ function updateHistory() {
         localStorage.setItem('records', JSON.stringify(records));
         updateHistory();
         updateTotal();
-        updateChart();
+        updateCharts();
       };
 
       const editBtn = document.createElement('button');
@@ -154,7 +160,7 @@ function updateHistory() {
           localStorage.setItem('records', JSON.stringify(records));
           updateHistory();
           updateTotal();
-          updateChart();
+          updateCharts();
         }
       };
 
@@ -174,24 +180,52 @@ function updateHistory() {
   });
 }
 
-// グラフを更新
-function updateChart() {
-  const ctx = document.getElementById('chart').getContext('2d');
+// カロリー推移＋PFC円グラフ更新
+function updateCharts() {
+  updateKcalChart();
+}
+
+// 折れ線グラフ
+function updateKcalChart() {
+  const ctx = document.getElementById('kcalChart').getContext('2d');
   const dates = Object.keys(records).sort();
   const caloriesPerDay = dates.map(date =>
     records[date].reduce((acc, cur) => acc + cur.calories, 0)
   );
 
-  if (chart) chart.destroy();
+  if (kcalChart) kcalChart.destroy();
 
-  chart = new Chart(ctx, {
-    type: 'bar',
+  kcalChart = new Chart(ctx, {
+    type: 'line',
     data: {
       labels: dates,
       datasets: [{
         label: 'Kcal',
         data: caloriesPerDay,
-        backgroundColor: '#4caf50'
+        fill: false,
+        borderColor: '#4caf50',
+        backgroundColor: '#4caf50',
+        tension: 0.1,
+        pointRadius: 5
+      }]
+    },
+    options: { responsive: true }
+  });
+}
+
+// 円グラフ
+function updatePFCChart(total) {
+  const ctx = document.getElementById('pfcChart').getContext('2d');
+
+  if (pfcChart) pfcChart.destroy();
+
+  pfcChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Protein', 'Fat', 'Carbs'],
+      datasets: [{
+        data: [total.protein, total.fat, total.carbs],
+        backgroundColor: ['#2196f3', '#f44336', '#ffeb3b']
       }]
     },
     options: { responsive: true }
