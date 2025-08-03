@@ -225,7 +225,7 @@ function updatePFCChart(total) {
       labels: ['Protein', 'Fat', 'Carbs'],
       datasets: [{
         data: [total.protein, total.fat, total.carbs],
-        backgroundColor: ['#fc6759ff', '#f9da5eff', '#cf9458ff']
+        backgroundColor: ['#e75480', '#ffd700', '#ff8c70']
       }]
     },
     options: { responsive: true }
