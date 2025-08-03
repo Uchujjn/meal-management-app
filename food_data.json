@@ -1,18 +1,23 @@
+
 [
-  {
-    "name": "鶏むね肉",
-    "calories": 145,
-    "protein": 22,
-    "fat": 3,
-    "carbs": 0,
-    "vitaminC": 0
-  },
-  {
-    "name": "ご飯",
-    "calories": 168,
-    "protein": 2.5,
-    "fat": 0.3,
-    "carbs": 37,
-    "vitaminC": 0
-  }
+  { "name": "ご飯", "unit": "g", "protein": 0.025, "fat": 0.003, "carbs": 0.37, "calories": 1.60 }
+  { "name": "うどん", "unit": "g", "protein": 0.026, "fat": 0.004, "carbs": 0.216, "calories": 0.95 }
+  { "name": "パスタ", "unit": "g", "protein": 0.058, "fat": 0.009, "carbs": 0.322, "calories": 1.50 }
+  { "name": "もち", "unit": "個", "protein": 2, "fat": 0.3, "carbs": 25.4, "calories": 122 }
+  { "name": "食パン", "unit": "枚", "protein": 4.5, "fat": 2.1, "carbs": 23.2, "calories": 124 }
+  { "name": "ホットケーキ", "unit": "枚", "protein": 7.59, "fat": 10.29, "carbs": 52.28, "calories": 326 }
+  
+  { "name": "鶏むね肉", "unit": "g", "protein": 0.213, "fat": 0.059, "carbs": 0.001, "calories": 0.133 }
+  { "name": "鶏もも肉", "unit": "g", "protein": 0.166, "fat": 0.142, "carbs": 0.001, "calories": 0.190 }
+
+  { "name": "卵", "unit": "個", "protein": 6.3, "fat": 5.3, "carbs": 0.2, "calories": 74 },
+  { "name": "納豆", "unit": "パック", "protein": 8.25, "fat": 5, "carbs": 6.05, "calories": 92 }
+  { "name": "豆腐", "unit": "g", "protein": 0.060, "fat": 0.047, "carbs": 0.022, "calories": 0.75 }
+
+  { "name": "カレールー", "unit": "個", "protein": 1.3, "fat": 6.82, "carbs": 8.94, "calories":  95}
+  { "name": "サラダ油", "unit": "大さじ", "protein": 0, "fat": 12, "carbs": 0, "calories": 102 },
+
+  { "name": "プロテイン", "unit": "杯", "protein": 20, "fat": 1.9, "carbs": 1.8, "calories": 114 }
+  { "name": "ウェイトゲイナー", "unit": "杯", "protein": 10.5, "fat": 2.0, "carbs": 16.6, "calories": 129 }
+  
 ]
