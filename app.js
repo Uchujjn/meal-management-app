@@ -1,8 +1,8 @@
-
 let foods = [];
 let records = JSON.parse(localStorage.getItem('records')) || {};
 let chart;
 
+// 食材データを読み込む
 fetch('food_data.json')
   .then(response => response.json())
   .then(data => {
@@ -14,22 +14,32 @@ fetch('food_data.json')
       option.textContent = f.name;
       select.appendChild(option);
     });
+
+    // ✅ 初期選択時に単位を表示する
+    if (foods.length > 0) {
+      select.value = foods[0].name;
+      document.getElementById('unit').textContent = foods[0].unit;
+    }
+
     updateTotal();
     updateHistory();
     updateChart();
   });
 
+// 食材選択時に単位をセット
 document.getElementById('foodSelect').addEventListener('change', () => {
   const selected = document.getElementById('foodSelect').value;
   const food = foods.find(f => f.name === selected);
   document.getElementById('unit').textContent = food ? food.unit : '';
 });
 
+// 今日の日付を取得
 function getToday() {
   const d = new Date();
   return d.toISOString().slice(0, 10);
 }
 
+// 食材を追加
 function addFood() {
   const foodName = document.getElementById('foodSelect').value;
   const quantity = parseFloat(document.getElementById('quantity').value);
@@ -40,7 +50,8 @@ function addFood() {
   const food = foods.find(f => f.name === foodName);
   if (!food) return alert("食材が見つかりません");
 
-  const factor = quantity;
+  // ⚡ 登録単位を基準に比率計算
+  const factor = quantity; // 登録単位が1単位なので、そのまま掛け算
 
   const today = getToday();
   if (!records[today]) records[today] = [];
@@ -65,6 +76,7 @@ function addFood() {
   document.getElementById('quantity').value = '';
 }
 
+// 全体合計を更新
 function updateTotal() {
   let total = { protein: 0, fat: 0, carbs: 0, calories: 0 };
   Object.values(records).forEach(dayList => {
@@ -83,6 +95,7 @@ function updateTotal() {
   `;
 }
 
+// 履歴を更新
 function updateHistory() {
   const history = document.getElementById('history');
   history.innerHTML = '';
@@ -131,6 +144,7 @@ function updateHistory() {
       editBtn.onclick = () => {
         const newQ = parseFloat(prompt('新しい量:', record.quantity));
         if (newQ && newQ > 0) {
+          const food = foods.find(f => f.name === record.name);
           record.quantity = newQ;
           record.protein = food.protein * newQ;
           record.fat = food.fat * newQ;
@@ -160,6 +174,7 @@ function updateHistory() {
   });
 }
 
+// グラフを更新
 function updateChart() {
   const ctx = document.getElementById('chart').getContext('2d');
   const dates = Object.keys(records).sort();
