@@ -1,0 +1,18 @@
+[
+  {
+    "name": "鶏むね肉",
+    "calories": 145,
+    "protein": 22,
+    "fat": 3,
+    "carbs": 0,
+    "vitaminC": 0
+  },
+  {
+    "name": "ご飯",
+    "calories": 168,
+    "protein": 2.5,
+    "fat": 0.3,
+    "carbs": 37,
+    "vitaminC": 0
+  }
+]
