@@ -19,7 +19,7 @@ details {
   background: #fff;
   border: 1px solid #ccc;
 }
-#pfcChart {
+pfcChart {
   max-width: 150px;
   max-height: 150px;
 }
