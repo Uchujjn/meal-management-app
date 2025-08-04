@@ -1,69 +1,35 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>食事管理アプリ</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    button {
-      margin-top: 10px;
-    }
-    canvas {
-      max-width: 400px;
-      margin-top: 20px;
-    }
-    #history {
-      margin-top: 20px;
-    }
-    #history h3 {
-      cursor: pointer;
-      background: #f0f0f0;
-      padding: 5px;
-    }
-    #history p {
-      margin: 0 0 5px 20px;
-    }
-  </style>
-  <!-- Chart.js & DataLabels plugin -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <h1>食事管理アプリ</h1>
-
-  <label>
-    食材を選択:
-    <select id="foodSelect">
-      <option value="">-- 食材を選んでください --</option>
-    </select>
-    <span id="unit"></span>
-  </label>
-
-  <label>
-    量:
-    <input type="number" id="quantity" min="0" step="0.1">
-  </label>
-
+  <h1>食事管理</h1>
+  <h2>食事追加</h2>
+  <select id="foodSelect"></select>
+  <input type="number" id="quantity" placeholder="量">
+  <span id="unit"></span>
   <button onclick="addFood()">追加</button>
 
-  <p id="total">今日の合計: </p>
+  <h2>今日の合計</h2>
+  <div id="total"></div>
 
+  <h2>履歴</h2>
   <div id="history"></div>
 
-  <h2>PFCバランス（今日）</h2>
+  <h2>PFCバランス</h2>
   <canvas id="pfcChart"></canvas>
 
   <h2>カロリー推移</h2>
   <canvas id="kcalChart"></canvas>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 </body>
 </html>
