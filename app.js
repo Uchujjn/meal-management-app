@@ -145,7 +145,7 @@ function updateHistory() {
       const div = document.createElement('div');
       div.textContent = `${record.name} ${record.quantity}${record.unit} ` +
         `P:${record.protein.toFixed(2)} F:${record.fat.toFixed(2)} ` +
-        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} 食費: ¥${record.cost.toFixed(0)}`;
+        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} ¥${record.cost.toFixed(0)}円`;
 
       const delBtn = document.createElement('button');
       delBtn.textContent = '削除';
