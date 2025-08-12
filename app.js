@@ -63,7 +63,8 @@ function addFood() {
     protein: food.protein * factor,
     fat: food.fat * factor,
     carbs: food.carbs * factor,
-    calories: food.calories * factor
+    calories: food.calories * factor,
+    cost: food.price * factor // 食費を追加
   });
 
   localStorage.setItem('records', JSON.stringify(records));
@@ -77,7 +78,7 @@ function addFood() {
 
 // 今日の合計を更新
 function updateTotal() {
-  let total = { protein: 0, fat: 0, carbs: 0, calories: 0 };
+  let total = { protein: 0, fat: 0, carbs: 0, calories: 0, cost: 0 };
   const today = getToday();
 
   if (records[today]) {
@@ -86,6 +87,7 @@ function updateTotal() {
       total.fat += item.fat;
       total.carbs += item.carbs;
       total.calories += item.calories;
+      total.cost += item.cost;
     });
   }
 
@@ -94,7 +96,8 @@ function updateTotal() {
     P: ${total.protein.toFixed(1)}g<br>
     F: ${total.fat.toFixed(1)}g<br>
     C: ${total.carbs.toFixed(1)}g<br>
-    Kcal: ${total.calories.toFixed(1)} kcal
+    Kcal: ${total.calories.toFixed(1)} kcal<br>
+    食費: ¥${total.cost.toFixed(0)}
   `;
 
   // PFC円グラフ更新
@@ -121,18 +124,20 @@ function updateHistory() {
     summary.textContent = date;
     details.appendChild(summary);
 
-    let dailyTotal = { protein: 0, fat: 0, carbs: 0, calories: 0 };
+    let dailyTotal = { protein: 0, fat: 0, carbs: 0, calories: 0, cost: 0 };
 
     group.forEach(record => {
       dailyTotal.protein += record.protein;
       dailyTotal.fat += record.fat;
       dailyTotal.carbs += record.carbs;
       dailyTotal.calories += record.calories;
+      dailyTotal.cost += record.cost;
 
       const div = document.createElement('div');
       div.textContent = `${record.name} ${record.quantity}${record.unit} ` +
         `P:${record.protein.toFixed(2)} F:${record.fat.toFixed(2)} ` +
-        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)}`;
+        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} ` +
+        `¥${record.cost.toFixed(0)}`;
 
       const delBtn = document.createElement('button');
       delBtn.textContent = '削除';
@@ -156,6 +161,7 @@ function updateHistory() {
           record.fat = food.fat * newQ;
           record.carbs = food.carbs * newQ;
           record.calories = food.calories * newQ;
+          record.cost = food.price * newQ;
 
           localStorage.setItem('records', JSON.stringify(records));
           updateHistory();
@@ -173,7 +179,8 @@ function updateHistory() {
     totalDiv.innerHTML = `<strong>日合計</strong> P:${dailyTotal.protein.toFixed(1)} ` +
                          `F:${dailyTotal.fat.toFixed(1)} ` +
                          `C:${dailyTotal.carbs.toFixed(1)} ` +
-                         `Kcal:${dailyTotal.calories.toFixed(1)}`;
+                         `Kcal:${dailyTotal.calories.toFixed(1)} ` +
+                         `食費: ¥${dailyTotal.cost.toFixed(0)}`;
     details.appendChild(totalDiv);
 
     history.appendChild(details);
@@ -225,7 +232,7 @@ function updatePFCChart(total) {
       labels: ['Protein', 'Fat', 'Carbs'],
       datasets: [{
         data: [total.protein, total.fat, total.carbs],
-        backgroundColor: ['#E6194B', '#FFE119', '#F58231']
+        backgroundColor: ['#fc6759ff', '#f9da5eff', '#cf9458ff']
       }]
     },
     options: { responsive: true }
