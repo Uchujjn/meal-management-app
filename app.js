@@ -186,7 +186,7 @@ function updateHistory() {
       div.appendChild(delBtn);
       details.appendChild(div);
     });
-
+ 
     const totalDiv = document.createElement('div');
     totalDiv.innerHTML = `<strong>日合計</strong> P:${dailyTotal.protein.toFixed(1)} ` +
                          `F:${dailyTotal.fat.toFixed(1)} ` +
