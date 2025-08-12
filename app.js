@@ -104,7 +104,7 @@ function updateTotal() {
     F: ${total.fat.toFixed(1)}g<br>
     C: ${total.carbs.toFixed(1)}g<br>
     Kcal: ${total.calories.toFixed(1)} kcal<br>
-    食費: ¥${total.cost.toFixed(0)}
+    ¥${total.cost.toFixed(0)}円
   `;
 
   // PFC円グラフ更新
@@ -145,7 +145,7 @@ function updateHistory() {
       const div = document.createElement('div');
       div.textContent = `${record.name} ${record.quantity}${record.unit} ` +
         `P:${record.protein.toFixed(2)} F:${record.fat.toFixed(2)} ` +
-        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} ¥${record.cost.toFixed(0)}円`;
+        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} ¥${record.cost.toFixed(0)}`;
 
       const delBtn = document.createElement('button');
       delBtn.textContent = '削除';
