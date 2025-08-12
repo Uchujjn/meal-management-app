@@ -42,13 +42,20 @@ function getToday() {
 // 食材を追加
 function addFood() {
   const foodName = document.getElementById('foodSelect').value;
-  const quantity = parseFloat(document.getElementById('quantity').value);
+  const quantityInput = document.getElementById('quantity').value.trim();
+  const quantity = parseFloat(quantityInput);
   const unit = document.getElementById('unit').textContent;
 
-  if (!quantity || quantity <= 0) return alert("量を正しく入力してください");
+  if (!quantityInput || isNaN(quantity) || quantity <= 0) {
+    alert("量を正しく数値で入力してください");
+    return;
+  }
 
   const food = foods.find(f => f.name === foodName);
-  if (!food) return alert("食材が見つかりません");
+  if (!food) {
+    alert("食材が見つかりません");
+    return;
+  }
 
   const factor = quantity;
 
@@ -60,11 +67,11 @@ function addFood() {
     name: foodName,
     quantity: quantity,
     unit: unit,
-    protein: food.protein * factor,
-    fat: food.fat * factor,
-    carbs: food.carbs * factor,
-    calories: food.calories * factor,
-    cost: food.price * factor // 食費を追加
+    protein: (food.protein || 0) * factor,
+    fat: (food.fat || 0) * factor,
+    carbs: (food.carbs || 0) * factor,
+    calories: (food.calories || 0) * factor,
+    cost: (parseFloat(food.price) || 0) * factor
   });
 
   localStorage.setItem('records', JSON.stringify(records));
@@ -83,11 +90,11 @@ function updateTotal() {
 
   if (records[today]) {
     records[today].forEach(item => {
-      total.protein += item.protein;
-      total.fat += item.fat;
-      total.carbs += item.carbs;
-      total.calories += item.calories;
-      total.cost += item.cost;
+      total.protein += item.protein || 0;
+      total.fat += item.fat || 0;
+      total.carbs += item.carbs || 0;
+      total.calories += item.calories || 0;
+      total.cost += item.cost || 0;
     });
   }
 
@@ -118,6 +125,8 @@ function updateHistory() {
 
   dates.forEach(date => {
     const group = records[date];
+    if (!Array.isArray(group) || group.length === 0) return; // 安全チェック
+
     const details = document.createElement('details');
     details.open = true;
     const summary = document.createElement('summary');
@@ -127,17 +136,16 @@ function updateHistory() {
     let dailyTotal = { protein: 0, fat: 0, carbs: 0, calories: 0, cost: 0 };
 
     group.forEach(record => {
-      dailyTotal.protein += record.protein;
-      dailyTotal.fat += record.fat;
-      dailyTotal.carbs += record.carbs;
-      dailyTotal.calories += record.calories;
-      dailyTotal.cost += record.cost;
+      dailyTotal.protein += record.protein || 0;
+      dailyTotal.fat += record.fat || 0;
+      dailyTotal.carbs += record.carbs || 0;
+      dailyTotal.calories += record.calories || 0;
+      dailyTotal.cost += record.cost || 0;
 
       const div = document.createElement('div');
       div.textContent = `${record.name} ${record.quantity}${record.unit} ` +
         `P:${record.protein.toFixed(2)} F:${record.fat.toFixed(2)} ` +
-        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} ` +
-        `¥${record.cost.toFixed(0)}`;
+        `C:${record.carbs.toFixed(2)} Kcal:${record.calories.toFixed(1)} 食費: ¥${record.cost.toFixed(0)}`;
 
       const delBtn = document.createElement('button');
       delBtn.textContent = '削除';
@@ -156,12 +164,16 @@ function updateHistory() {
         const newQ = parseFloat(prompt('新しい量:', record.quantity));
         if (newQ && newQ > 0) {
           const food = foods.find(f => f.name === record.name);
+          if (!food) {
+            alert("食材情報が見つかりません");
+            return;
+          }
           record.quantity = newQ;
-          record.protein = food.protein * newQ;
-          record.fat = food.fat * newQ;
-          record.carbs = food.carbs * newQ;
-          record.calories = food.calories * newQ;
-          record.cost = food.price * newQ;
+          record.protein = (food.protein || 0) * newQ;
+          record.fat = (food.fat || 0) * newQ;
+          record.carbs = (food.carbs || 0) * newQ;
+          record.calories = (food.calories || 0) * newQ;
+          record.cost = (parseFloat(food.price) || 0) * newQ;
 
           localStorage.setItem('records', JSON.stringify(records));
           updateHistory();
@@ -179,8 +191,7 @@ function updateHistory() {
     totalDiv.innerHTML = `<strong>日合計</strong> P:${dailyTotal.protein.toFixed(1)} ` +
                          `F:${dailyTotal.fat.toFixed(1)} ` +
                          `C:${dailyTotal.carbs.toFixed(1)} ` +
-                         `Kcal:${dailyTotal.calories.toFixed(1)} ` +
-                         `食費: ¥${dailyTotal.cost.toFixed(0)}`;
+                         `Kcal:${dailyTotal.calories.toFixed(1)} 食費: ¥${dailyTotal.cost.toFixed(0)}`;
     details.appendChild(totalDiv);
 
     history.appendChild(details);
@@ -197,7 +208,7 @@ function updateKcalChart() {
   const ctx = document.getElementById('kcalChart').getContext('2d');
   const dates = Object.keys(records).sort();
   const caloriesPerDay = dates.map(date =>
-    records[date].reduce((acc, cur) => acc + cur.calories, 0)
+    records[date].reduce((acc, cur) => acc + (cur.calories || 0), 0)
   );
 
   if (kcalChart) kcalChart.destroy();
